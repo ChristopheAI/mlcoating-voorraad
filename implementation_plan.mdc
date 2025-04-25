@@ -1,0 +1,34 @@
+## Phase 1 – Data Model & UI Setup
+
+1. Create a new page: `/voorraad/nieuw` with a clean UI to add new powder coating stock items.
+   - Fields:
+     - RAL kleur (dropdown)
+     - Laktype (dropdown: mat, structuur, glans, satijn, primer)
+     - Merk (dropdown of vrij veld: Protech, Sherwin-Williams, Tiger)
+     - Aantal dozen (integer)
+     - Vervaldatum (optioneel datepicker)
+   - Buttons:
+     - "Voorraad Opslaan"
+     - "Annuleren"
+   - Design: groot, klikvriendelijk, geen overbodige info
+   - Validatie: alle velden verplicht behalve vervaldatum
+
+2. Create a new data collection: `VoorraadItem`
+   - Fields:
+     - `ral_kleur` (string)
+     - `laktype` (string)
+     - `merk` (string)
+     - `aantal_dozen` (integer)
+     - `vervaldatum` (date, optional)
+
+3. When submitting the form, add new item to `VoorraadItem` collection.
+
+4. Create route `/voorraad` to display all current stock.
+   - Table grouped by: `ral_kleur + laktype + merk`
+   - Columns: aantal dozen, status (laag indien <3), vervaldatum (indien aanwezig)
+   - Add basic filter: op kleur, merk of laktype
+
+5. Add a "Verbruik" knop bij elk item.
+   - Clicking it opens modal: "Hoeveel dozen verbruikt?"
+   - Updates the `aantal_dozen` accordingly
+   - If `aantal_dozen < 3`, toon label “Lage voorraad”

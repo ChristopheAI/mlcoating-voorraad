@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Configuratie voor de juiste production URL's
+[build.environment]
+  NEXT_PUBLIC_API_URL = "/"
+
+# Blijf de juiste functie formats ondersteunen
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Handle SPA navigatie
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

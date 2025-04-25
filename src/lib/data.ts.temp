@@ -1,0 +1,204 @@
+// Nieuwe naam volgens de UX-richtlijnen
+export type PoederDoos = {
+  id: number; // Intern ID voor React keys en mutaties (niet zichtbaar voor gebruiker)
+  ral_kleur: string;
+  laktype: string;
+  merk: string;
+  gewicht: number; // standaard 20kg
+  aantal_dozen: number;
+  aantal_gebruikt: number; // nieuw veld om bij te houden welke deels gebruikt zijn
+  vervaldatum?: string;
+};
+
+// Maak een gemuteerde array om nieuwe items toe te kunnen voegen
+let voorraadData: PoederDoos[] = [
+  { id: 1, ral_kleur: "9016", laktype: "mat", merk: "Protech", gewicht: 20, aantal_dozen: 5, aantal_gebruikt: 0, vervaldatum: "2025-12-31" },
+  { id: 2, ral_kleur: "9005", laktype: "glans", merk: "Tiger", gewicht: 20, aantal_dozen: 2, aantal_gebruikt: 0 },
+  { id: 3, ral_kleur: "7016", laktype: "structuur", merk: "Sherwin-Williams", gewicht: 20, aantal_dozen: 8, aantal_gebruikt: 0, vervaldatum: "2026-01-15" },
+];
+
+// Functie om data op te slaan in localStorage
+const saveToLocalStorage = () => {
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('poederdozen', JSON.stringify(voorraadData));
+    } catch (error) {
+      console.error('Fout bij opslaan naar localStorage:', error);
+    }
+  }
+};
+
+// Functie om data te laden uit localStorage
+export const loadFromLocalStorage = () => {
+  if (typeof window !== 'undefined') {
+    try {
+      const storedData = localStorage.getItem('poederdozen');
+      if (storedData) {
+        voorraadData = JSON.parse(storedData);
+      }
+    } catch (error) {
+      console.error('Fout bij laden uit localStorage:', error);
+    }
+  }
+};
+
+// Laad data uit localStorage bij initialisatie
+if (typeof window !== 'undefined') {
+  loadFromLocalStorage();
+}
+
+// Getter voor de voorraad data
+export const voorraad = () => voorraadData;
+
+// Functie om een nieuw item toe te voegen
+export const voegVoorraadItemToe = (item: Omit<PoederDoos, "id" | "gewicht" | "aantal_gebruikt">) => {
+  // Genereer een nieuw ID (hoogste ID + 1)
+  const newId = Math.max(0, ...voorraadData.map(item => item.id)) + 1;
+  
+  // Voeg het nieuwe item toe aan de array
+  const newItem: PoederDoos = {
+    id: newId,
+    gewicht: 20, // Standaard gewicht
+    aantal_gebruikt: 0, // Begin met 0 gebruikte dozen
+    ...item
+  };
+  
+  voorraadData = [...voorraadData, newItem];
+  saveToLocalStorage();
+  return newItem;
+};
+
+// Functie om voorraad te verminderen (verbruik)
+export const verbruikVoorraad = (id: number, hoeveeheid: string): PoederDoos | null => {
+  const itemIndex = voorraadData.findIndex(item => item.id === id);
+  if (itemIndex === -1) return null;
+  
+  const item = voorraadData[itemIndex];
+  
+  // Bereken nieuwe waarden op basis van de geselecteerde hoeveeheid
+  let nieuweAantal = item.aantal_dozen;
+  let nieuweGebruikt = item.aantal_gebruikt;
+  
+  switch(hoeveeheid) {
+    case 'kwart':
+      if (item.aantal_dozen > 0) {
+        if (item.aantal_gebruikt === 0) {
+          nieuweGebruikt = 0.25;
+        } else {
+          nieuweGebruikt = Math.min(1, item.aantal_gebruikt + 0.25);
+          // Als we 100% hebben bereikt, verlaag het aantal en reset gebruikt
+          if (nieuweGebruikt >= 1) {
+            nieuweAantal = Math.max(0, item.aantal_dozen - 1);
+            nieuweGebruikt = 0;
+          }
+        }
+      }
+      break;
+    case 'half':
+      if (item.aantal_dozen > 0) {
+        if (item.aantal_gebruikt === 0) {
+          nieuweGebruikt = 0.5;
+        } else {
+          nieuweGebruikt = Math.min(1, item.aantal_gebruikt + 0.5);
+          // Als we 100% hebben bereikt, verlaag het aantal en reset gebruikt
+          if (nieuweGebruikt >= 1) {
+            nieuweAantal = Math.max(0, item.aantal_dozen - 1);
+            nieuweGebruikt = 0;
+          }
+        }
+      }
+      break;
+    case 'driekwart':
+      if (item.aantal_dozen > 0) {
+        if (item.aantal_gebruikt === 0) {
+          nieuweGebruikt = 0.75;
+        } else {
+          nieuweGebruikt = Math.min(1, item.aantal_gebruikt + 0.75);
+          // Als we 100% hebben bereikt, verlaag het aantal en reset gebruikt
+          if (nieuweGebruikt >= 1) {
+            nieuweAantal = Math.max(0, item.aantal_dozen - 1);
+            nieuweGebruikt = nieuweGebruikt - 1;
+          }
+        }
+      }
+      break;
+    case 'leeg':
+      if (item.aantal_dozen > 0) {
+        nieuweAantal = Math.max(0, item.aantal_dozen - 1);
+        nieuweGebruikt = 0;
+      }
+      break;
+    default:
+      // Doe niets als de hoeveeheid niet bekend is
+      break;
+  }
+  
+  // Update het item
+  const updatedItem: PoederDoos = {
+    ...item,
+    aantal_dozen: nieuweAantal,
+    aantal_gebruikt: nieuweGebruikt
+  };
+  
+  // Update de array
+  voorraadData = [
+    ...voorraadData.slice(0, itemIndex),
+    updatedItem,
+    ...voorraadData.slice(itemIndex + 1)
+  ];
+  
+  saveToLocalStorage();
+  return updatedItem;
+};
+
+// Functie om een custom hoeveelheid te verbruiken
+export const verbruikCustomHoeveelheid = (id: number, hoeveelheid: number): PoederDoos | null => {
+  const itemIndex = voorraadData.findIndex(item => item.id === id);
+  if (itemIndex === -1) return null;
+  
+  const item = voorraadData[itemIndex];
+  
+  // Zorg ervoor dat we niet meer dan het beschikbare aantal verbruiken
+  const maxVerbruik = item.aantal_dozen + (1 - item.aantal_gebruikt);
+  const verbruik = Math.min(maxVerbruik, hoeveelheid);
+  
+  // Bereken nieuwe waarden
+  let nieuweAantal = item.aantal_dozen;
+  let nieuweGebruikt = item.aantal_gebruikt;
+  
+  if (verbruik >= 1) {
+    // Hele dozen verbruiken
+    const heleDozijn = Math.floor(verbruik);
+    nieuweAantal = Math.max(0, item.aantal_dozen - heleDozijn);
+    
+    // Eventueel resterende fractie
+    const fractie = verbruik - heleDozijn;
+    if (fractie > 0) {
+      nieuweGebruikt = fractie;
+    }
+  } else {
+    // Alleen fractie verbruiken
+    nieuweGebruikt = Math.min(1, item.aantal_gebruikt + verbruik);
+    if (nieuweGebruikt >= 1) {
+      nieuweAantal = Math.max(0, item.aantal_dozen - 1);
+      nieuweGebruikt = 0;
+    }
+  }
+  
+  // Update het item
+  const updatedItem: PoederDoos = {
+    ...item,
+    aantal_dozen: nieuweAantal,
+    aantal_gebruikt: nieuweGebruikt
+  };
+  
+  // Update de array
+  voorraadData = [
+    ...voorraadData.slice(0, itemIndex),
+    updatedItem,
+    ...voorraadData.slice(itemIndex + 1)
+  ];
+  
+  saveToLocalStorage();
+  return updatedItem;
+};
