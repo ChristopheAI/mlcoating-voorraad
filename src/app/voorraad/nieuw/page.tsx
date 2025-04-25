@@ -66,7 +66,7 @@ const alleRalKleuren: RalKleur[] = [
 // Formulierstatus type
 type FormState = {
   ral_kleur: string;
-  kleurGroep: KleurGroep | "";
+
   laktype: string;
   laksubtype: string;
   merk: string;
@@ -92,7 +92,7 @@ export default function NieuwPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [formState, setFormState] = useState<FormState>({
     ral_kleur: "",
-    kleurGroep: "",
+  
     laktype: "",
     laksubtype: "",
     merk: "",
@@ -118,13 +118,6 @@ export default function NieuwPage() {
     }));
     
     // Speciale logica voor velden die andere velden beïnvloeden
-    if (field === 'kleurGroep') {
-      setFormState(prev => ({
-        ...prev,
-        ral_kleur: "",  // Reset RAL keuze als kleurgroep verandert
-      }));
-    }
-    
     if (field === 'laktype') {
       setFormState(prev => ({
         ...prev,
@@ -145,7 +138,6 @@ export default function NieuwPage() {
           tiger_kwaliteit: undefined,
           // Reset RAL-gerelateerde velden als van/naar Tiger wordt gewisseld
           ral_kleur: "",
-          kleurGroep: "" as ""
         };
         return newState;
       });
@@ -533,126 +525,48 @@ export default function NieuwPage() {
             2. Selecteer RAL Kleur
           </h2>
           
-          {/* Tiger-specifieke directe RAL invoer */}
-          {formState.merk === "Tiger" ? (
-            <div className="mb-6">
-              <div className="p-4 bg-blue-50 rounded-xl border border-blue-100 mb-4">
-                <div className="flex items-center text-blue-800 mb-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                  <span className="font-medium">Voor Tiger producten kan je de RAL-code direct selecteren</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* RAL-code directe invoer */}
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    RAL-code invoeren <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex">
-                    <span className="flex items-center px-3 bg-gray-100 border border-gray-300 rounded-l-lg text-gray-600 font-medium">RAL</span>
-                    <input
-                      type="text"
-                      value={formState.ral_kleur}
-                      onChange={(e) => handleFieldChange('ral_kleur', e.target.value)}
-                      className="w-full px-4 py-3 rounded-r-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="bijv. 9011"
-                    />
-                  </div>
-                </div>
-
-                {/* RAL dropdown met alle opties */}
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Of kies uit lijst <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={formState.ral_kleur}
-                    onChange={(e) => handleFieldChange('ral_kleur', e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="">Selecteer RAL kleur</option>
-                    {alleRalKleuren.map(kleur => (
-                      <option key={kleur.code} value={kleur.code}>RAL {kleur.code} - {kleur.naam}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              
-              {/* Toon geselecteerde kleur als kleurvlak indien gekozen */}
-              {formState.ral_kleur && (
-                <div className="mt-4 p-4 rounded-xl border-2 border-blue-300 bg-white">
-                  <div className="flex items-center">
-                    <div
-                      className="w-12 h-12 rounded-lg border border-gray-300 shadow-sm mr-4"
-                      style={{ backgroundColor: alleRalKleuren.find(k => k.code === formState.ral_kleur)?.hex || '#CCCCCC' }}
-                    ></div>
-                    <div>
-                      <div className="font-bold">RAL {formState.ral_kleur}</div>
-                      <div className="text-gray-500">{alleRalKleuren.find(k => k.code === formState.ral_kleur)?.naam || 'Aangepaste RAL kleur'}</div>
-                    </div>
-                  </div>
-                </div>
-              )}
+          {/* RAL kleur selectie voor alle merken: input + dropdown */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              RAL kleur <span className="text-red-500">*</span>
+            </label>
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={formState.ral_kleur}
+                onChange={(e) => handleFieldChange('ral_kleur', e.target.value)}
+                className="w-1/2 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Bijv. 9005"
+              />
+              <select
+                value={formState.ral_kleur}
+                onChange={(e) => handleFieldChange('ral_kleur', e.target.value)}
+                className="w-1/2 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Selecteer RAL kleur</option>
+                {alleRalKleuren.map(kleur => (
+                  <option key={kleur.code} value={kleur.code}>
+                    RAL {kleur.code} - {kleur.naam}
+                  </option>
+                ))}
+              </select>
             </div>
-          ) : (
-            <>
-              {/* Standaard kleurcategorie selectie voor andere merken */}
-              <div className="mb-4">
-                <label className="block text-gray-700 font-medium mb-2">
-                  Kleurcategorie <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {Object.keys(ralKleurGroepen).map((groep) => (
-                    <button
-                      key={groep}
-                      type="button"
-                      onClick={() => handleFieldChange('kleurGroep', groep as KleurGroep)}
-                      className={`py-2 px-3 rounded-lg border font-medium transition-colors ${
-                        formState.kleurGroep === groep 
-                          ? 'bg-blue-100 border-blue-500 text-blue-800' 
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      {groep}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              
-              {/* RAL kleur selectie als kleurvlakken */}
-              {formState.kleurGroep && (
-                <div className="mt-4">
-                  <label className="block text-gray-700 font-medium mb-2">
-                    RAL kleur <span className="text-red-500">*</span>
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {ralKleurGroepen[formState.kleurGroep as KleurGroep].map((kleur) => (
-                      <button
-                        key={kleur.code}
-                        type="button"
-                        onClick={() => handleFieldChange('ral_kleur', kleur.code)}
-                        className={`rounded-xl border-2 p-3 transition-all ${
-                          formState.ral_kleur === kleur.code 
-                            ? 'ring-2 ring-blue-500 ring-offset-1 border-blue-300' 
-                            : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        <div 
-                          className="w-full h-12 rounded-lg border border-gray-300 shadow-sm mb-2" 
-                          style={{ backgroundColor: kleur.hex }}
-                        ></div>
-                        <div className="font-bold">RAL {kleur.code}</div>
-                        <div className="text-sm text-gray-500">{kleur.naam}</div>
-                      </button>
-                    ))}
+            {/* Toon kleurvlak indien geselecteerd */}
+            {formState.ral_kleur && (
+              <div className="mt-4 p-4 rounded-xl border-2 border-blue-300 bg-white">
+                <div className="flex items-center">
+                  <div
+                    className="w-12 h-12 rounded-lg border border-gray-300 shadow-sm mr-4"
+                    style={{ backgroundColor: alleRalKleuren.find(k => k.code === formState.ral_kleur)?.hex || '#CCCCCC' }}
+                  ></div>
+                  <div>
+                    <div className="font-bold">RAL {formState.ral_kleur}</div>
+                    <div className="text-gray-500">{alleRalKleuren.find(k => k.code === formState.ral_kleur)?.naam || 'Aangepaste RAL kleur'}</div>
                   </div>
                 </div>
-              )}
-            </>
-          )}
+              </div>
+            )}
+          </div>
         </div>
         
         {/* DEEL 3: Laktype selectie */}
