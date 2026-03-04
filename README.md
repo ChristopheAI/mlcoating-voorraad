@@ -1,55 +1,53 @@
-# 📦 Poederdozenmonitor – MVP
+# ML Coating Voorraad
 
-Een eenvoudige, doelgerichte webapp voor het beheren van poedercoating voorraad op de werkvloer. Gebouwd met maximale focus op snelheid, zichtbaarheid en gebruiksgemak.
+Praktische voorraadapp voor poedercoating op de werkvloer.
 
----
+## Status
 
-## ✅ Hoofdfeatures – Wat de app doet
+Actief project. Draaiende deployment:
+- https://mlcoatingbackend-production.up.railway.app/
 
-### Voorraadoverzicht
-- Lijst van alle beschikbare voorraad
-- Gesorteerd op kleur en glansgraad
-- Aantal dozen duidelijk zichtbaar
-- Merk per item vermeld
-- Visuele statuslabels:
-  - "Lage voorraad" bij < 3 dozen
-  - "Nieuw" bij recent toegevoegde items
+## Wat dit project oplost
 
-### Nieuwe voorraad toevoegen
-- Minimale input:
-  - Kleur (RAL of vrije omschrijving)
-  - Laktype (mat, structuur, glans, satijn, primer, metallic, ...)
-  - Merk
-  - Aantal dozen
-  - Optioneel: vervaldatum
+Op de vloer moet voorraad snel en correct aangepast kunnen worden zonder complexe ERP-flow.
+Deze app focust op snelheid en eenvoud:
+- Voorraad bekijken per RAL-kleur, laktype en merk
+- Nieuwe voorraad toevoegen via compact formulier
+- Verbruik registreren (in kg of gedeeltelijke doos)
+- Historiek en undo voor recente verbruiksacties
+- Zoeken/filteren op kleur en merk
 
-### Voorraad verbruiken / aanpassen
-- Verminderen van aantal of gewicht bij gebruik
-- Ondersteuning voor deels gebruikte dozen
-- Automatische statusupdate bij wijziging
+## Stack
 
-### Zoeken & filteren
-- Zoekbalk: kleur, laktype of merk
-- Dropdownfilters voor laktype en merk
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS
+- Client-side opslag via `localStorage`
 
-> ⚡ Geoptimaliseerd voor snel, intuïtief gebruik op de werkvloer (iPad/tablet geschikt)
+## Belangrijke implementatiedetails
 
----
+- Domeinmodel rond `PoederDoos` met velden voor dozen, gewicht en deels gebruikt
+- Verbruik ondersteunt kwart/half/driekwart/leeg en custom kg
+- Undo-mechanisme met beperkte geschiedenis voor veilige correcties
+- Productflow geoptimaliseerd voor tablet/workfloor-gebruik
 
-## ❌ Wat we expliciet niet doen
+## Lokaal draaien
 
-- Geen voorraadnummers, batch-ID's, locatievelden of foto's
-- Geen gebruikerslogins of accountbeheer
-- Geen AI, OCR, QR- of barcode scanning
-- Geen logging of rapportagestructuur (tenzij later aangevraagd)
+```bash
+npm install
+npm run dev
+```
 
----
+Open daarna `http://localhost:3000`.
 
-## 💡 Filosofie
-Deze app beantwoordt in één klik de vragen van de gebruiker op de vloer:
-- "Welke kleuren zijn bijna op?"
-- "Hoeveel dozen zijn er nog van type X?"
-- "Welke zijn al deels gebruikt?"
+## Roadmap
 
-Simpel. Snel. Zonder onnodige ballast.
-"# mlcoating-voorraad" 
+- API + database (persistent multi-user data)
+- Auth en rollen
+- Rapportage/export flow
+- Audit trail
+
+## Repository
+
+https://github.com/ChristopheAI/mlcoating-voorraad
