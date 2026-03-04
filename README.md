@@ -4,8 +4,7 @@ Praktische voorraadapp voor poedercoating op de werkvloer.
 
 ## Status
 
-Actief project. Draaiende deployment:
-- https://mlcoatingbackend-production.up.railway.app/
+Actief project in gebruik.
 
 ## Wat dit project oplost
 
