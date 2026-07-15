@@ -1,3 +1,7 @@
+> **Live demo (fictional data):** https://app-production-32db.up.railway.app
+
+Portfolio: https://vastpakt.be
+
 # ML Coating Voorraad
 
 Praktische voorraadapp voor poedercoating op de werkvloer.
@@ -50,3 +54,4 @@ Open daarna `http://localhost:3000`.
 ## Repository
 
 https://github.com/ChristopheAI/mlcoating-voorraad
+
