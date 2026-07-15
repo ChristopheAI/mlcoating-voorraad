@@ -1,57 +1,44 @@
-> **Live demo (fictional data):** https://app-production-32db.up.railway.app
-
-Portfolio: https://vastpakt.be
-
 # ML Coating Voorraad
 
-Praktische voorraadapp voor poedercoating op de werkvloer.
+Praktische **voorraadapp voor poedercoating** op de werkvloer.
+
+> **Live demo (fictieve data):** https://app-production-32db.up.railway.app  
+> Portfolio: https://vastpakt.be
 
 ## Status
 
-Actief project in gebruik.
+- In **dagelijks gebruik** bij het poedercoating-bedrijf (productie-deploy is privé)
+- Publieke **demo** op Railway met seed-data en demo-logins (geen klantdata)
+- Deze repo is de **UI / app-code** (Next.js) zoals die in de publieke showcase hoort
 
-## Wat dit project oplost
+## Wat het oplost
 
-Op de vloer moet voorraad snel en correct aangepast kunnen worden zonder complexe ERP-flow.
-Deze app focust op snelheid en eenvoud:
-- Voorraad bekijken per RAL-kleur, laktype en merk
-- Nieuwe voorraad toevoegen via compact formulier
-- Verbruik registreren (in kg of gedeeltelijke doos)
-- Historiek en undo voor recente verbruiksacties
-- Zoeken/filteren op kleur en merk
+Op de vloer moet voorraad snel en correct aangepast kunnen worden zonder zwaar ERP:
 
-## Stack
+- Voorraad per RAL-kleur, laktype en merk
+- Stock in, verbruik uit, correcties met spoor
+- Rollen (admin / operator) in de productie-setup
+- Focus: snelheid op tablet/werkvloer
 
-- Next.js 15
-- React 19
-- TypeScript
-- Tailwind CSS
-- Client-side opslag via `localStorage`
+## Cijfers (productie, publiek genoemd)
 
-## Belangrijke implementatiedetails
+- 135 voorraadregels  
+- ±1.822 kg poeder in beheer  
+- Eerste versie → dagelijks gebruik in weken; **ruim een jaar** in gebruik  
 
-- Domeinmodel rond `PoederDoos` met velden voor dozen, gewicht en deels gebruikt
-- Verbruik ondersteunt kwart/half/driekwart/leeg en custom kg
-- Undo-mechanisme met beperkte geschiedenis voor veilige correcties
-- Productflow geoptimaliseerd voor tablet/workfloor-gebruik
+## Stack (deze repo)
 
-## Lokaal draaien
+- Next.js · React · TypeScript · Tailwind  
+
+Productie draait met aparte backend/database-deploy (niet alles staat in deze public snapshot). De **demo** is de bedoelde klikbare showcase.
+
+## Lokaal
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open daarna `http://localhost:3000`.
+## Note
 
-## Roadmap
-
-- API + database (persistent multi-user data)
-- Auth en rollen
-- Rapportage/export flow
-- Audit trail
-
-## Repository
-
-https://github.com/ChristopheAI/mlcoating-voorraad
-
+Klantproductie en echte data blijven privé. Publiek alleen demo + deze codebase-showcase.
